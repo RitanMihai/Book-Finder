@@ -1,5 +1,7 @@
 Client/.idea
 Client/lib
+Client/target
 Server/.idea
 Server/lib
+Server/target
 *.iml

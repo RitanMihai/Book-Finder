@@ -1,0 +1,91 @@
+syntax = "proto3"; /* default is proto2 */
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+
+/* If no explicit java_package option is given in the .proto file, then by default the proto package
+(specified using the “package” keyword) will be used */
+option java_package = "proto";
+
+service BookService{
+  /* rpc methods send request/s and get response/s that are define in code as messages.
+     When we want multiple request/responses we will use the key word stream in front of the parameter */
+  rpc getBook(BookRequest) returns (BookResponse);
+
+  rpc getBooks(Empty) returns (stream Book);
+  rpc getPage(PageRequest) returns (PageResponse);
+  rpc getPages(PageRequest) returns (stream PageResponse);
+  rpc setPages(stream Book.Page) returns (Empty);
+  /* Return nothing, we must return a message on each rpc functions that we have, so when we do not want to
+  return something we will create an message with empty body (without fields) */
+  rpc setBook(Book) returns(Empty); /* Alternatively we can user parameter google.protobuf.Empty that have the same
+  implementation that we use */
+}
+
+message Book {
+  /* All supported scalar type here: https://developers.google.com/protocol-buffers/docs/proto3*/
+  int32 id = 1;
+  string title = 2;
+  int32 total_pages = 3;
+  string publisher = 4;
+  string authors = 5;
+  bool is_available  = 6; /* If this field will never get a value in our code the default value will be set (false in
+  this case), same for each of the above fields. */
+
+  /* Unfortunately, Any proto doesn't mean a proto message that can encode any Java objects as you may think,
+  instead it is a proto message that is capable of packing any other proto messages with their types. */
+  google.protobuf.Any additional = 7;
+
+  /* We can define an enum in message and declare the field either below or above the enum */
+  enum Genre{
+    /* Commenting the line below will cause a compile error inside Google and a warning message outside */
+    option allow_alias = true; /* Only with this option we can use alias,
+    ex: SF and SCIENCE_FICTION have assigned the same value, 4 */
+    ACTION = 0; /* Start with zero to keep backward compatibility with proto2 */
+    HORROR = 1;
+    DRAMA = 2;
+    LOVE = 3;
+    SF = 4;
+    SCIENCE_FICTION = 4;
+  };
+
+  Genre genre = 8;
+
+  /* We can define and use message types inside other message types */
+  message Page {
+    int32 book_id = 1;
+    int32 page_number = 2;
+    string content = 3;
+  }
+
+  repeated Page pages = 9; /* this field have the type of the nested message Page and can not be use outside */
+}
+
+message BookRequest {
+  string name = 1;
+}
+
+message BookResponse {
+  Book book = 1;
+}
+
+message PageRequest {
+  int32 book_id = 1;
+  int32 page_number = 2;
+}
+
+message PageResponse {
+  /* If we declare a nested message type, the only place we can use it is inside the parent message
+     Uncommenting the line below will cause an error */
+  // Page page = 1;
+  /* But we can use it as that by calling the parent and than the nested message */
+  Book.Page page = 1;
+  /* or use the same fields as the message that you want to use, but you will have duplicate code
+  and it is harder to maintain */
+  // int32 page_number = 1;
+  // string content = 2;
+}
+
+/* Equivalent of Null or Void for rpc functions */
+message Empty {
+  /* EMPTY */
+}
