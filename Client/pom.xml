@@ -37,6 +37,13 @@
             <artifactId>grpc-stub</artifactId>
             <version>${grpc.version}</version>
         </dependency>
+
+        <!-- gRPC use this kind of annotation, but not import them directly -->
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.2</version>
+        </dependency>
     </dependencies>
 
     <build>
