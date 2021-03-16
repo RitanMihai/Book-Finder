@@ -24,6 +24,7 @@ public class Main {
         System.out.println("3. Get all books");
         System.out.println("4. Get all pages of a book");
         System.out.println("5. Get a page from a book");
+        System.out.println("6. QUIT");
 
         boolean isConnected = true;
         while (isConnected) {
@@ -226,8 +227,12 @@ public class Main {
                     });
                     break;
                 }
+                case 6: {
+                    isConnected = false;
+                    break;
+                }
                 default:
-                    throw new IllegalStateException("Unexpected value: " + option);
+                    System.out.println("Unknown command, insert a valid command!");
             }
         }
         channel.shutdown();
