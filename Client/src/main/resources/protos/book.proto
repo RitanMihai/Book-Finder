@@ -1,6 +1,5 @@
 syntax = "proto3"; /* default is proto2 */
 import "google/protobuf/any.proto";
-import "google/protobuf/empty.proto";
 
 /* If no explicit java_package option is given in the .proto file, then by default the proto package
 (specified using the “package” keyword) will be used */
@@ -65,7 +64,7 @@ message BookRequest {
 }
 
 message BookResponse {
-  Book book = 1;
+    Book book = 1;
 }
 
 message PageRequest {
