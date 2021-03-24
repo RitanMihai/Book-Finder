@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is the GUI client in a nutshell.
+
+      We have a search bar and a list on the left ( potentially with a filter and a sorter) and  the content of a
+   selected book, magazine, article etc. on the right. On the right side besides content we have two arrows that help us
+   to navigate between pages and an editable current page number (in below example is 1).
+
+                   Logo
+                    │
+                    ▼
+            ┌───► ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+  Title Bar │     │ □ Book Finder                                                                         _ □ X │
+            ├───► ├─────────────────────────────────────────────────────────────────────────────────────────────┤
+   Menu Bar │     │ File  Settings About                                                                        │
+            ├───► ├───────────────────────┬─┬─────────────────────────────────────────────────────────────────┬─┤
+            │     │                       ├─┤                                                                 ├─┤
+            │     │ ┌───────────────────┐ │ │                         Mock Book                               │ │
+            │     │ │Search bar         │ │ │                                                                 │ │
+            │     │ └───────────────────┘ │ │     Lorem ipsum is simply dummy text of the printing and        │ │
+            │     │                       │ │                                                                 │ │
+            │     │  Mock book 1          │ │  typesetting industry. Lorem ipsum has been the industry's      │ │
+            │     │                       │ │                                                                 │ │
+            │     │  Mock book 2          │ │  standard dummy text ever since the 1500s when a unknown printer│ │
+            │     │                       │ │                                                                 │ │
+            │     │  Mock book 3          │ │  took a galley of type and scrambled it ti make a type specimen │ │
+            │     │                       │ │                                                                 │ │
+            │     │  Mock book 4          │ │  book. It has survived not only five centuries, but also the    │ │
+Split Pane  │     │                       │ │                                                                 │ │
+            │     │                       │ │  leap into electronic typesetting, remaining essentially un-    │ │
+            │     │                       │ │                                                                 │ │
+            │     │                       │ │  changed. It was popularised in the 1960s with the release of   │ │
+            │     │                       │ │                                                                 │ │
+            │     │                       │ │  Letraset sheets containing Lorem Ipsum passages, and more re-  │ │
+            │     │                       │ │                                                                 │ │
+            │     │                       │ │  cently with desktop publishing software like Aldus PageMaker   │ │
+            │     │                       │ │                                                                 │ │
+            │     │                       │ │  including versions of Lorem Ipsum.                             │ │
+            │     │                       │ │                                                                 │ │
+            │     │                       │ │                                                                 │ │
+            │     │                       │ │                                                                 │ │
+            │     │                       ├─┤ <                         1/150                               > ├─┤
+            └─────┴───────────────────────┴┴┴─────────────────────────────────────────────────────────────────┴─┘
+                  ▲                        ▲                                                                    ▲
+                  │  fx:id booksListView   │                        fx:id pageView                              │
+                  └────────────────────────┴────────────────────────────────────────────────────────────────────┘
+                         ListView                                      WebView
+
+   Obs: The main window is an AnchorPane, but you can try also with a BorderPane,
+   this allows you to Organizes nodes in top, left, right, centre and the bottom of the screen.
+
+   Diagram made in https://asciiflow.com/
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.web.WebView?>
+
+<!-- Set the default window size to hd ( 1366 x 768 ) -->
+<!-- Take a look here to see layout patterns: https://docs.oracle.com/javafx/2/layout/builtin_layouts.htm -->
+
+<AnchorPane minWidth="500.0" prefHeight="768" prefWidth="1366" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
+    <children>
+        <!-- AnchorPane help us to stretching the menu to the full width of the parent component -->
+        <MenuBar AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+
+        <!-- In this split window the ListView represent 30% of the entire Pane,
+          this property is defined by dividerPositions, without mention this is default 50% -->
+        <SplitPane dividerPositions="0.3" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25">
+            <items>
+                <!-- The whole left panel that includes the search bar and list of books -->
+                <AnchorPane>
+                    <children>
+                        <!-- Search bar -->
+                        <AnchorPane prefHeight="46.0" prefWidth="194.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                            <children>
+                                <AnchorPane fx:id="SearchContainer" prefHeight="22.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Button mnemonicParsing="false" text="Search" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                              <TextField layoutX="25.0" layoutY="5.0" promptText="Search a book" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="65.0" />
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                        <!-- List of books -->
+                        <ListView fx:id="booksListView" minWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0" />
+                    </children>
+                </AnchorPane>
+                <!-- The content of the book -->
+                <AnchorPane>
+                    <children>
+                        <!-- WebView is a special container that can load html pages both local (from local .html pages or code) and online (via a link ex: www.github.com) -->
+                        <WebView fx:id="pageView" minWidth="300.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <AnchorPane prefHeight="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <children>
+                        <StackPane prefHeight="30" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <Button mnemonicParsing="false" text="&lt;" StackPane.alignment="BOTTOM_LEFT">
+                                 <StackPane.margin>
+                                    <Insets bottom="2.0" left="5.0" />
+                                 </StackPane.margin></Button>
+                              <Button mnemonicParsing="false" text="&gt;" StackPane.alignment="BOTTOM_RIGHT">
+                                 <StackPane.margin>
+                                    <Insets bottom="2.0" right="5.0" />
+                                 </StackPane.margin></Button>
+                              <HBox alignment="CENTER" maxWidth="200.0" spacing="5.0">
+                                 <children>
+                                    <TextField alignment="CENTER" prefWidth="50.0" promptText="0" text="0" />
+                                    <Label text="/" />
+                                    <Label text="150" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </AnchorPane>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>

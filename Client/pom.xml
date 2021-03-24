@@ -44,10 +44,31 @@
             <artifactId>javax.annotation-api</artifactId>
             <version>1.2</version>
         </dependency>
+
+        <!-- JavaFX -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>15.0.1</version>
+        </dependency>
+
+        <!-- Without this dependency we can not use fxml files in JavaFx code -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>15.0.1</version>
+        </dependency>
+
+        <!-- Must have this dependency to use html pages in our app -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>15.0.1</version>
+        </dependency>
     </dependencies>
 
     <build>
-        <defaultGoal>clean generate-sources compile install</defaultGoal>
+        <!-- <defaultGoal>clean generate-sources compile install</defaultGoal> -->
 
         <plugins>
             <!-- compile proto file into java files. -->
@@ -84,7 +105,7 @@
                 </executions>
             </plugin>
 
-
+            <!-- Maven plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -94,6 +115,18 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
+            <!-- JavaFX plugin -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.5</version>
+                <configuration>
+                    <!-- Where your main class is in project hierarchy -->
+                    <mainClass>Main</mainClass>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
