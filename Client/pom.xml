@@ -65,8 +65,14 @@
             <artifactId>javafx-web</artifactId>
             <version>15.0.1</version>
         </dependency>
-    </dependencies>
 
+        <dependency>
+            <groupId>com.victorlaerte</groupId>
+            <artifactId>jfx-asynctask</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+    </dependencies>
     <build>
         <!-- <defaultGoal>clean generate-sources compile install</defaultGoal> -->
 
@@ -111,8 +117,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>9</source>
+                    <target>9</target>
                 </configuration>
             </plugin>
 
