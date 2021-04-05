@@ -1,12 +1,20 @@
 package services;
 
+import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors;
+import com.google.rpc.Code;
+import io.grpc.Metadata;
 import io.grpc.Status;
+import io.grpc.protobuf.ProtoUtils;
+import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
+import io.grpc.util.TransmitStatusRuntimeExceptionInterceptor;
 import proto.BookOuterClass;
 import proto.BookOuterClass.*;
 import proto.BookServiceGrpc;
+import services.util.BookUtil;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,66 +27,18 @@ public class Book extends BookServiceGrpc.BookServiceImplBase {
     public void getBooks(BookOuterClass.BooksRequest request, StreamObserver<BookOuterClass.BookResponse> responseObserver) {
         /* Firstly check if we have any books */
         if (this.books.size() != 0) {
-            Integer startBook = 0;
-            Integer endBook = books.size();
-
             List<BookOuterClass.Book> filteredBooks = this.books;
             Boolean haveFilters = request.hasBookFilters();
             Boolean haveFieldMask = request.hasFieldMask();
 
             /* Apply filters if there are any */
             if (haveFilters) {
-                System.out.println("Requested filters are : ");
-                Map<Descriptors.FieldDescriptor, Object> allFilters = request.getBookFilters().getAllFields();
-
-                /* *
-                 * As you can see we got the field names, we know that for each of this field gRPC framework generate
-                 * getters and setters following this pattern: getFieldName(), setFieldName().
-                 * Ex. field title: getTitle(), setTitle.
-                 * That being said we will use java Reflection to dynamically filter our list
-                 * */
-
-                Map<String, Object> methods = new HashMap<>();
-                allFilters.forEach((fieldDescriptor, o) ->
-                        System.out.println(" ( " + o.getClass() + " ) " + fieldDescriptor.getName() + " : " + o));
-
-                System.out.println("Create a Map of Methods and their values ... ");
-                allFilters.forEach(((fieldDescriptor, o) -> {
-                    /* Construct methods name */
-                    final String getter = "get";
-                    String fieldName = fieldDescriptor.getName();
-                    String methodName = getter + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-
-                    methods.put(methodName, o);
-                }));
-
-                System.out.println(methods);
-
-                filteredBooks = filteredBooks.stream().filter(book -> {
-                    boolean isValid = true;
-
-                    for (Map.Entry<String, Object> entry : methods.entrySet()) {
-                        String s = entry.getKey();
-                        Object o = entry.getValue();
-
-                        try {
-                            isValid = book.getClass().getMethod(s, null).invoke(book).equals(o);
-                            if (!isValid)
-                                break;
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                        } catch (NoSuchMethodException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    return isValid;
-                }).collect(Collectors.toList());
+                Map<Descriptors.FieldDescriptor, Object> filters = request.getBookFilters().getAllFields();
+                filteredBooks = BookUtil.filterList(this.books, filters);
             }
 
-            for (BookOuterClass.Book book : filteredBooks) {
+            /* Apply field mask if was requested */
+            if (haveFieldMask) {
                 /* *
                  * An example with an instance of FieldMask class
                  * We do not need the FieldMask below it 'cause we use the one from the request
@@ -88,22 +48,40 @@ public class Book extends BookServiceGrpc.BookServiceImplBase {
                         addPaths("title")
                         .build();
                 */
-
-                /* Apply field mask if was requested */
-                if (haveFieldMask) {
+                for (int i = 0; i < filteredBooks.size(); i++) {
                     BookOuterClass.Book.Builder filteredBook = BookOuterClass.Book.newBuilder();
-                    com.google.protobuf.util.FieldMaskUtil.merge(request.getFieldMask(), book, filteredBook);
-                    responseObserver.onNext(BookOuterClass.BookResponse.newBuilder().setBook(filteredBook).build());
-                } else {
-                    BookResponse bookResponse = BookOuterClass.BookResponse.newBuilder().setBook(book).build();
-                    responseObserver.onNext(bookResponse);
+                    com.google.protobuf.util.FieldMaskUtil.merge(request.getFieldMask(), filteredBooks.get(i), filteredBook);
+                    filteredBooks.set(i, filteredBook.build());
                 }
+
             }
 
-            responseObserver.onCompleted();
+            /* Make a map of all request fields and their values */
+            Map<Descriptors.FieldDescriptor, Object> requestFields = request.getAllFields();
+            /* *
+             * Check if pagination was requested
+             * If startBook/endBook exist a value will be returned otherwise null
+             * */
+
+            Descriptors.FieldDescriptor firstBookDescriptor = request.getDescriptorForType().findFieldByName("first_book");
+            Descriptors.FieldDescriptor lastBookDescriptor = request.getDescriptorForType().findFieldByName("last_book");
+
+            Object firstBookIndex = requestFields.get(firstBookDescriptor);
+            Object lastBookIndex = requestFields.get(lastBookDescriptor);
+
+            filteredBooks = BookUtil.pagination(filteredBooks, firstBookIndex, lastBookIndex);
+
+            if (filteredBooks.isEmpty())
+                responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("Empty list requested").asRuntimeException());
+
+            else {
+                filteredBooks.forEach(book -> responseObserver.onNext(BookOuterClass.BookResponse.newBuilder().setBook(book).build()));
+                responseObserver.onCompleted();
+            }
+
         } else {
             /* gRPC status codes */
-            Status status = Status.NOT_FOUND.withDescription("No books");
+            Status status = Status.NOT_FOUND.withDescription("There are no books");
             responseObserver.onError(status.asRuntimeException());
         }
     }
