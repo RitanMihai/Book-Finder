@@ -1,23 +1,14 @@
 package services;
 
-import com.google.protobuf.Any;
 import com.google.protobuf.Descriptors;
-import com.google.rpc.Code;
-import io.grpc.Metadata;
 import io.grpc.Status;
-import io.grpc.protobuf.ProtoUtils;
-import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
-import io.grpc.util.TransmitStatusRuntimeExceptionInterceptor;
 import proto.BookOuterClass;
 import proto.BookOuterClass.*;
 import proto.BookServiceGrpc;
 import services.util.BookUtil;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Book extends BookServiceGrpc.BookServiceImplBase {
     /* Simulate a database at runtime */
@@ -90,10 +81,121 @@ public class Book extends BookServiceGrpc.BookServiceImplBase {
     public void setBook(BookOuterClass.Book request, StreamObserver<Empty> responseObserver) {
         books.add(request);
 
-        System.out.println(request);
-
         Empty.Builder response = Empty.newBuilder();
         responseObserver.onNext(response.build());
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getPage(PageRequest request, StreamObserver<PageResponse> responseObserver) {
+        /* Get Book */
+        BookOuterClass.Book book = books.stream().filter(element -> element.getId() == (request.getBookId()))
+                .findFirst().orElse(null);
+
+        /* Error handling */
+        if (book == null) {
+            /* gRPC status codes */
+            Status status = Status.NOT_FOUND.withDescription("Book by this id not found");
+            responseObserver.onError(status.asRuntimeException());
+        } else {
+            BookOuterClass.Page page = book.getPagesList().stream().filter(element -> element.getPageNumber() == (request.getPageNumber()))
+                    .findFirst().orElse(null);
+            if (page == null) {
+                Status status = Status.NOT_FOUND.withDescription("Page not found");
+                responseObserver.onError(status.asRuntimeException());
+            } else {
+                responseObserver.onNext(PageResponse.newBuilder().setPage(page).build());
+                responseObserver.onCompleted();
+            }
+        }
+    }
+
+    @Override
+    public void setPage(Page request, StreamObserver<Empty> responseObserver) {
+        /* Get Book */
+        BookOuterClass.Book searchedBook = books.stream().filter(element -> element.getId() == (request.getBookId()))
+                .findFirst().orElse(null);
+
+        /* Error handling */
+        if (searchedBook == null) {
+            Status status = Status.NOT_FOUND.withDescription("Book not found");
+            responseObserver.onError(status.asRuntimeException());
+        } else {
+            Integer bookIndex = 0;
+
+            boolean found = false;
+            for (int i = 0; i < books.size(); i++) {
+                if (books.get(i).getId() == request.getBookId()) {
+                    bookIndex = i;
+                    found = true;
+                }
+            }
+
+            if (found == true) {
+                BookOuterClass.Book.Builder book = books.get(bookIndex).toBuilder();
+                Page page = Page.newBuilder()
+                        .setBookId(request.getBookId())
+                        .setId(request.getId())
+                        .setPageNumber(request.getPageNumber())
+                        .setContent(request.getContent()).build();
+
+                book.addPages(page);
+
+                books.set(bookIndex, book.build());
+
+                responseObserver.onNext(Empty.newBuilder().build());
+                responseObserver.onCompleted();
+            }
+        }
+    }
+
+    @Override
+    public StreamObserver<BookOuterClass.Page> setPages(StreamObserver<Empty> responseObserver) {
+        return new StreamObserver<BookOuterClass.Page>() {
+            List<BookOuterClass.Page> pages = new ArrayList<>();
+
+            @Override
+            public void onNext(BookOuterClass.Page page) {
+                pages.add(page);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                /* EMPTY */
+            }
+
+            @Override
+            public void onCompleted() {
+                Integer pageId = pages.get(0).getBookId();
+                Integer bookIndex = 0;
+
+                boolean found = false;
+                for (int i = 0; i < books.size(); i++) {
+                    if (books.get(i).getId() == pageId) {
+                        bookIndex = i;
+                        found = true;
+                    }
+                }
+
+                if (found == true) {
+                    BookOuterClass.Book.Builder book = books.get(bookIndex).toBuilder();
+
+                    for (int i = 0; i < pages.size(); i++) {
+                        book.addPages(pages.get(i));
+                    }
+
+                    books.set(bookIndex, book.build());
+
+                    responseObserver.onNext(null);
+                    responseObserver.onCompleted();
+                } else {
+                    /* gRPC status codes */
+                    Status status = Status.NOT_FOUND.withDescription("Book by this name not found");
+                    responseObserver.onError(status.asRuntimeException());
+                }
+            }
+        };
+    }
 }
+
+

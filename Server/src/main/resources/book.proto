@@ -18,6 +18,7 @@ service BookService{
   rpc getPages(PagesRequest) returns (stream PageResponse);
   rpc getPage(PageRequest) returns (PageResponse);
   rpc setPage(Page) returns(Empty);
+  rpc setPages(stream Page) returns (Empty);
 }
 
 message Book {
@@ -27,6 +28,7 @@ message Book {
   string publisher = 4;
   string author = 5;
   Genre genre = 6;
+  repeated Page pages = 7;
 }
 
 message  BookRequest{
@@ -84,11 +86,16 @@ enum Genre{
 };
 
 message Page {
-  /* Not defined yet */
+  int32 id = 1;
+  int32 book_id = 2;
+  int32 page_number = 3;
+  string content = 4;
 }
 
 message PageRequest {
-  /* Not defined yet */
+  int32 id = 1;
+  int32 book_id = 2;
+  int32 page_number = 3;
 }
 
 message PagesRequest {
@@ -96,7 +103,7 @@ message PagesRequest {
 }
 
 message PageResponse {
-  /* Not defined yet */
+  Page page = 1;
 }
 
 /* Equivalent of Null or Void for rpc functions */
