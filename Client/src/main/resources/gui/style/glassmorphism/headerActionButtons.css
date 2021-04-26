@@ -1,0 +1,45 @@
+#exitButton {
+    -fx-text-fill: black;
+    -fx-font-weight: 300;
+    -fx-padding: 5;
+    -fx-font-family: Arial, SansSerif;
+}
+
+#exitButton:hover {
+    -fx-text-fill: white;
+    -fx-font-weight: 300;
+    -fx-background-color: #fc033daa;
+    -fx-padding: 5;
+    -fx-border-radius: 5;
+    -fx-font-family: Arial, SansSerif;
+}
+
+#maximizeButton {
+    -fx-text-fill: black;
+    -fx-font-weight: 300;
+    -fx-padding: 5;
+    -fx-font-family: Arial, SansSerif;
+}
+
+#maximizeButton:hover {
+    -fx-font-weight: 300;
+    -fx-background-color: #ffffffaa;
+    -fx-padding: 5;
+    -fx-border-radius: 5;
+    -fx-font-family: Arial, SansSerif;
+}
+
+#minimizeButton {
+    -fx-text-fill: black;
+    -fx-font-weight: 300;
+    -fx-padding: 5;
+    -fx-font-family: Arial, SansSerif;
+}
+
+#minimizeButton:hover {
+    -fx-font-weight: 300;
+    -fx-background-color: #ffffffaa;
+    -fx-padding: 5;
+    -fx-border-radius: 5;
+    -fx-font-family: Arial, SansSerif;
+}

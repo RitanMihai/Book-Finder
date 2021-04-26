@@ -13,10 +13,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 import model.database.Book;
 import server.Tasks.BookTasks;
-
-import javafx.scene.input.KeyEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -40,6 +39,9 @@ public class MainController implements Initializable {
     private AnchorPane pageControlContainer;
 
     @FXML
+    private Label exitButton;
+
+    @FXML
     private TextField searchBookField;
 
     @FXML
@@ -53,6 +55,9 @@ public class MainController implements Initializable {
 
     @FXML
     private ProgressIndicator booksListViewLoadingBar;
+
+    @FXML
+    private Menu menu;
 
     BookTasks tasks;
 
@@ -121,6 +126,8 @@ public class MainController implements Initializable {
         WebEngine webEngine = pageView.getEngine();
         URL welcomePageURL = getClass().getResource("/welcome_page.html");
         webEngine.load(welcomePageURL.toString());
+
+        /* Movable menu */
     }
 
     @FXML
@@ -178,6 +185,14 @@ public class MainController implements Initializable {
                 pageView.getEngine().loadContent(content);
             }
         });
+    }
+
+    @FXML
+    private void closeButtonAction() {
+        // get a handle to the stage
+        Stage stage = (Stage) exitButton.getScene().getWindow();
+        // do what you have to do
+        stage.close();
     }
 
     public void addTableViewBook(Book book) {

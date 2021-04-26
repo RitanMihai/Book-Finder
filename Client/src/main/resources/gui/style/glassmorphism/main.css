@@ -1,0 +1,68 @@
+/* Import the other style sheets into the current style sheet */
+@import "table.css"; /* Using a string */
+@import url("headerActionButtons.css"); /* Using a url */
+
+.root {
+    -bg-gradient: linear-gradient(from 25px 25px to 500px 300px, #73D4FFaa, #958BE8aa);
+    -hlight-gradient: linear-gradient(to bottom, #1dbbdd44, #93f9b944);
+
+    -primary: #81c48355;
+    -secondary: #375FCB;
+    -tertiary: #5000b8;
+    -tertiary-armed: #FDDD71;
+}
+
+#mainWindow {
+    -fx-background-color: -bg-gradient;
+    -fx-padding: 0px 10px 10px 10px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, black, 10, 10, 0, 0)
+    -fx-background-radius: 30px;
+}
+
+/* Navigation buttons */
+#previousButtonPressed {
+    -fx-background-color: #ffffffaa;
+}
+
+#previousButtonPressed:hover{
+    -fx-background-color: #ffffffff;
+}
+
+#nextButtonPressed {
+    -fx-background-color: #ffffffaa;
+}
+
+#nextButtonPressed:hover {
+    -fx-background-color: #ffffffff;
+}
+
+.split-pane:horizontal {
+    -fx-background-color: transparent;
+}
+
+.split-pane-divider {
+    -fx-background-color: white;
+    -fx-opacity: 0.8;
+    -fx-start-margin: 10px;
+
+}
+
+.menu-bar {
+    -fx-background-color: transparent;
+}
+
+.menu-bar .label {
+    -fx-text-fill: black;
+}
+
+#pageViewContainer {
+    -fx-background-radius: 10px;
+    -fx-background-color: white;
+    -fx-padding: 10;
+}
+
+/* Text field */
+.text-field {
+    -fx-background-color: #ffffffaa;
+}

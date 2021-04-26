@@ -52,6 +52,7 @@ Split Pane  │     │                       │ │                           
    Diagram made in https://asciiflow.com/
 -->
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -71,28 +72,39 @@ Split Pane  │     │                       │ │                           
 <!-- Set the default window size to hd ( 1366 x 768 ) -->
 <!-- Take a look here to see layout patterns: https://docs.oracle.com/javafx/2/layout/builtin_layouts.htm -->
 
-<AnchorPane minWidth="500.0" prefHeight="768" prefWidth="1366" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
+<AnchorPane fx:id="mainWindow" minWidth="500.0" prefHeight="794.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
     <children>
-        <!-- AnchorPane help us to stretching the menu to the full width of the parent component -->
-        <MenuBar AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <menus>
-                <Menu mnemonicParsing="false" text="File">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Close" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Delete" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
+      <AnchorPane fx:id="header" prefHeight="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox spacing="5.0" AnchorPane.rightAnchor="10.0">
+               <children>
+                  <Label fx:id="minimizeButton" text="_" />
+                  <Label fx:id="maximizeButton" text="🗖" />
+                  <Label fx:id="exitButton" onMouseClicked="#closeButtonAction" text="X" />
+               </children>
+            </HBox>
+              <!-- AnchorPane help us to stretching the menu to the full width of the parent component -->
+              <MenuBar AnchorPane.leftAnchor="30.0">
+                  <menus>
+                      <Menu fx:id="menu" mnemonicParsing="false" text="File">
+                          <items>
+                              <MenuItem mnemonicParsing="false" text="Close" />
+                          </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Edit">
+                          <items>
+                              <MenuItem mnemonicParsing="false" text="Delete" />
+                          </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Help">
+                        <items>
+                              <MenuItem mnemonicParsing="false" text="About" />
+                          </items>
+                      </Menu>
+                  </menus>
+              </MenuBar>
+         </children>
+      </AnchorPane>
 
         <!-- In this split window the ListView represent 30% of the entire Pane,
           this property is defined by dividerPositions, without mention this is default 50% -->
@@ -104,20 +116,20 @@ Split Pane  │     │                       │ │                           
                         <!-- Search bar -->
                         <AnchorPane prefHeight="45" prefWidth="195" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                             <children>
-                                <AnchorPane fx:id="searchContainer" prefHeight="22.0" prefWidth="200.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <AnchorPane fx:id="searchContainer" prefHeight="22.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <TextField fx:id="searchBookField" layoutX="25.0" layoutY="5.0" promptText="Search a book" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+                                        <TextField fx:id="searchBookField" layoutX="25.0" layoutY="5.0" promptText="Search a book" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="10.0" />
                                     </children>
                                 </AnchorPane>
                             </children>
                         </AnchorPane>
 
                         <!-- List View + Loading Screen  -->
-                        <AnchorPane minWidth="200.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
+                        <AnchorPane minWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
                             <children>
 
                                 <!-- List of books -->
-                                <TableView fx:id="booksTableView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <TableView fx:id="booksTableView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                                     <columns>
                                         <TableColumn fx:id="titleColumn" editable="false" text="Title" />
                                         <TableColumn fx:id="authorColumn" editable="false" text="Author" />
@@ -131,12 +143,15 @@ Split Pane  │     │                       │ │                           
                         </AnchorPane>
                     </children>
                 </AnchorPane>
+
                 <!-- The content of the book -->
-                <AnchorPane style="-fx-background-color: white;">
+                <AnchorPane fx:id="webPageContainer">
                     <children>
                         <!-- WebView is a special container that can load html pages both local (from local .html pages or code) and online (via a link ex: www.github.com) -->
-                        <WebView fx:id="pageView" minWidth="300.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <AnchorPane fx:id="pageControlContainer" prefHeight="30.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                        <AnchorPane fx:id="pageViewContainer" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <WebView fx:id="pageView" minWidth="300.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        </AnchorPane>
+                        <AnchorPane fx:id="pageControlContainer" prefHeight="30.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0">
                             <children>
                                 <StackPane prefHeight="30" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                     <children>
@@ -152,11 +167,9 @@ Split Pane  │     │                       │ │                           
                                         </Button>
                                         <HBox alignment="CENTER" maxWidth="200.0" spacing="5.0">
                                             <children>
-                                                <TextField fx:id="currentPageNumberField"
-                                                           onAction="#onEnter"
-                                                           alignment="CENTER" prefWidth="50.0" promptText="0" text="1" />
+                                                <TextField fx:id="currentPageNumberField" alignment="CENTER" onAction="#onEnter" prefWidth="50.0" promptText="0" text="1" />
                                                 <Label text="/" />
-                                                <Label fx:id="totalPagesNumberLabel"/>
+                                                <Label fx:id="totalPagesNumberLabel" />
                                             </children>
                                         </HBox>
                                     </children>
@@ -168,4 +181,7 @@ Split Pane  │     │                       │ │                           
             </items>
         </SplitPane>
     </children>
+   <stylesheets>
+      <URL value="@../style/glassmorphism/main.css" />
+   </stylesheets>
 </AnchorPane>
