@@ -1,0 +1,54 @@
+/* Import the other style sheets into the current style sheet */
+@import "table.css"; /* Using a string */
+@import url("header.css"); /* Using a url */
+@import url("list.css");
+
+#rootWindow {
+    -fx-background-color: linear-gradient(from 25px 25px to 500px 300px, #222831, #222831);
+    -fx-padding: 0px 10px 10px 10px;
+}
+
+/* Navigation buttons */
+#previousButtonPressed {
+    -fx-background-color: #ffffffaa;
+}
+
+#previousButtonPressed:hover {
+    -fx-background-color: #ffffffff;
+}
+
+#nextButtonPressed {
+    -fx-background-color: #ffffffaa;
+}
+
+#nextButtonPressed:hover {
+    -fx-background-color: #ffffffff;
+}
+
+.split-pane:horizontal {
+    -fx-background-color: transparent;
+}
+
+.split-pane-divider {
+    -fx-background-color: white;
+    -fx-opacity: 0.8;
+    -fx-start-margin: 10px;
+}
+
+#pageViewContainer {
+    -fx-background-color: white;
+    -fx-padding: 10;
+}
+
+#searchBookField {
+    -fx-background-radius: 0px;
+}
+
+/* Text field */
+.text-field {
+    -fx-background-color: #ffffffaa;
+}
+
+#searchBookField {
+    -fx-prompt-text-fill: #4d4d4d;
+}

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.paint.Color?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" style="-fx-background-color: FFFFFF00;"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SettingsController">
+    <AnchorPane fx:id="rootWindow" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+
+        <effect>
+            <DropShadow blurType="GAUSSIAN" height="20.0" offsetX="5.0" offsetY="5.0" radius="9.5" width="20.0">
+                <color>
+                    <Color opacity="0.5" />
+                </color>
+            </DropShadow>
+        </effect>
+
+        <children>
+            <AnchorPane fx:id="header" prefHeight="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                        AnchorPane.topAnchor="0.0">
+                <children>
+                    <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" AnchorPane.bottomAnchor="0.0"
+                          AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                        <children>
+                            <ImageView fitHeight="18.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../icons/logo/logo.png"/>
+                                </image>
+                            </ImageView>
+                            <Label fx:id="headerTitle" text="Settings"/>
+                        </children>
+                    </HBox>
+                    <HBox spacing="5.0" AnchorPane.rightAnchor="10.0">
+                        <children>
+                            <Label fx:id="minimizeButton" text="_" onMouseClicked="#minimizeButtonAction"/>
+                            <Label fx:id="maximizeButton" text="🗖" onMouseClicked="#maximizeButtonAction"/>
+                            <Label fx:id="exitButton" onMouseClicked="#closeButtonAction" text="X"/>
+                        </children>
+                    </HBox>
+                </children>
+            </AnchorPane>
+
+            <SplitPane dividerPositions="0.29797979797979796" layoutX="110.0" layoutY="40.0" prefHeight="160.0"
+                       prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                       AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+                <items>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                        <children>
+                            <ListView fx:id="settingsListView" layoutX="-33.0" layoutY="-19.0" prefHeight="200.0"
+                                      prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            </ListView>
+                        </children>
+                    </AnchorPane>
+                    <AnchorPane fx:id="rightPane" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                    </AnchorPane>
+                </items>
+            </SplitPane>
+        </children>
+    </AnchorPane>
+</AnchorPane>

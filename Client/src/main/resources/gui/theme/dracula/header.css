@@ -1,0 +1,70 @@
+/* Actions */
+#exitButton {
+    -fx-text-fill: white;
+    -fx-font-weight: 300;
+    -fx-padding: 5;
+    -fx-font-family: Arial, SansSerif;
+}
+
+#exitButton:hover {
+    -fx-text-fill: white;
+    -fx-font-weight: 300;
+    -fx-background-color: #fc033daa;
+    -fx-padding: 5;
+    -fx-border-radius: 5;
+    -fx-font-family: Arial, SansSerif;
+}
+
+#maximizeButton {
+    -fx-text-fill: white;
+    -fx-font-weight: 300;
+    -fx-padding: 5;
+    -fx-font-family: Arial, SansSerif;
+}
+
+#maximizeButton:hover {
+    -fx-text-fill: black;
+    -fx-font-weight: 300;
+    -fx-background-color: #ffffffaa;
+    -fx-padding: 5;
+    -fx-border-radius: 5;
+    -fx-font-family: Arial, SansSerif;
+}
+
+#minimizeButton {
+    -fx-text-fill: white;
+    -fx-font-weight: 300;
+    -fx-padding: 5;
+    -fx-font-family: Arial, SansSerif;
+}
+
+#minimizeButton:hover {
+    -fx-text-fill: black;
+    -fx-font-weight: 300;
+    -fx-background-color: #ffffffaa;
+    -fx-padding: 5;
+    -fx-border-radius: 5;
+    -fx-font-family: Arial, SansSerif;
+}
+
+
+/* Menu */
+.menu-bar, .menu-item, .context-menu {
+    -fx-background-color: #222831;
+}
+
+.menu {
+    -fx-label-padding: 3px;
+}
+
+.menu:hover, .menu:showing, .menu:focused, .menu:pressed, .menu-item:focused {
+    -fx-background-color: #3b85d4;
+}
+
+.menu-bar .label {
+    -fx-text-fill: white;
+}
+
+#headerTitle {
+    -fx-text-fill: white;
+}

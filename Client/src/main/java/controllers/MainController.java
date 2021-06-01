@@ -3,52 +3,46 @@ package controllers;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import model.database.Book;
+import stage.StageManager;
+
+import Theme.ThemeManager;
+import Theme.Themes;
+
+import model.Book;
 import server.Tasks.BookTasks;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MainController implements Initializable {
+public class MainController implements Controller {
 
     /* Every FXML must be named as it is in its view, in this case main.fxml */
+    @FXML
+    private AnchorPane rootWindow;
+
     @FXML
     private TableView<Book> booksTableView;
 
     @FXML
-    private TableColumn<Book, String> titleColumn;
-    @FXML
-    private TableColumn<Book, String> authorColumn;
-    @FXML
-    private TableColumn<Book, String> genreColumn;
-    @FXML
-    private TableColumn<Book, String> publisherColumn;
+    private TableColumn<Book, String> titleColumn, authorColumn, genreColumn, publisherColumn;
 
     @FXML
     private AnchorPane pageControlContainer;
 
     @FXML
-    private Label exitButton;
+    private TextField searchBookField, currentPageNumberField;
 
     @FXML
-    private TextField searchBookField;
-
-    @FXML
-    private TextField currentPageNumberField;
-
-    @FXML
-    private Label totalPagesNumberLabel;
+    private Label totalPagesNumberLabel, exitButton, maximizeButton, minimizeButton;
 
     @FXML
     private WebView pageView;
@@ -59,29 +53,19 @@ public class MainController implements Initializable {
     @FXML
     private Menu menu;
 
+    @FXML
+    private MenuItem settings;
+
     BookTasks tasks;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        /* Create Table columns */
-        /* Manual way to create columns in our table - if we do not define TableColumn in .fxml*/
-        /*
-        TableColumn titleColumn = new TableColumn("Title");
-        TableColumn authorColumn = new TableColumn("Author");
-        TableColumn genreColumn = new TableColumn("Genre");
-        TableColumn publisherColumn = new TableColumn("Publisher");
+        Controllers.INSTANCE.setMainController((Controller) this);
 
-        booksTableView.getColumns().addAll(titleColumn, authorColumn, genreColumn, publisherColumn);
-        */
-
-        /* Initially get all books - asynchronously */
         tasks = new BookTasks(this);
 
         /* Bind data */
-        this.titleColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("title"));
-        this.authorColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("author"));
-        this.genreColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("genre"));
-        this.publisherColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("publisher"));
+        bindData();
 
         /* Load the book list */
         tasks.getBooks();
@@ -126,10 +110,9 @@ public class MainController implements Initializable {
         WebEngine webEngine = pageView.getEngine();
         URL welcomePageURL = getClass().getResource("/welcome_page.html");
         webEngine.load(welcomePageURL.toString());
-
-        /* Movable menu */
     }
 
+    /* FXML functions */
     @FXML
     public void onPreviousButtonPressed() {
         Integer selectedBookId = booksTableView.getSelectionModel().selectedItemProperty().get().getId();
@@ -177,6 +160,43 @@ public class MainController implements Initializable {
         }
     }
 
+    @FXML
+    private void closeButtonAction() {
+        Stage stage = (Stage) exitButton.getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    private void minimizeButtonAction() {
+        Stage stage = (Stage) minimizeButton.getScene().getWindow();
+        if (stage.isIconified())
+            stage.setIconified(false);
+        else
+            stage.setIconified(true);
+    }
+
+    @FXML
+    private void maximizeButtonAction() {
+        Stage stage = (Stage) maximizeButton.getScene().getWindow();
+
+        if (stage.isFullScreen())
+            stage.setFullScreen(false);
+        else
+            stage.setFullScreen(true);
+    }
+
+    @FXML
+    private void onSettingsPressed(ActionEvent ae) {
+        StageManager.makeSettingsWindow();
+    }
+
+    private void bindData() {
+        this.titleColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("title"));
+        this.authorColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("author"));
+        this.genreColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("genre"));
+        this.publisherColumn.setCellValueFactory(new PropertyValueFactory<Book, String>("publisher"));
+    }
+
     public void showPage(String content) {
         /* To make sure the page will be load on a FX thread */
         Platform.runLater(new Runnable() {
@@ -187,40 +207,15 @@ public class MainController implements Initializable {
         });
     }
 
-    @FXML
-    private void closeButtonAction() {
-        // get a handle to the stage
-        Stage stage = (Stage) exitButton.getScene().getWindow();
-        // do what you have to do
-        stage.close();
-    }
-
     public void addTableViewBook(Book book) {
         this.booksTableView.getItems().add(book);
-    }
-
-    /* Getters and setter */
-    public TableView<Book> getBooksTableView() {
-        return booksTableView;
-    }
-
-    public void setBooksTableView(ObservableList<Book> booksTableView) {
-        this.booksTableView.setItems(booksTableView);
-    }
-
-    public WebView getPageView() {
-        return pageView;
-    }
-
-    public void setPageView(WebView pageView) {
-        this.pageView = pageView;
     }
 
     public ProgressIndicator getBooksListViewLoadingBar() {
         return booksListViewLoadingBar;
     }
 
-    public void setBooksTableViewLoadingBar(ProgressIndicator booksListTableLoadingBar) {
-        this.booksListViewLoadingBar = booksListViewLoadingBar;
+    public AnchorPane getRoot() {
+        return rootWindow;
     }
 }

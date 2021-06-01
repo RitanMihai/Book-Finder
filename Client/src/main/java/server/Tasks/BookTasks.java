@@ -3,7 +3,7 @@ package server.Tasks;
 import com.victorlaerte.asynctask.AsyncTask;
 import controllers.MainController;
 import io.grpc.stub.StreamObserver;
-import model.database.Book;
+import model.Book;
 import proto.BookOuterClass;
 import server.Connector;
 

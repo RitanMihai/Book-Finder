@@ -1,3 +1,4 @@
+/* Actions */
 #exitButton {
     -fx-text-fill: black;
     -fx-font-weight: 300;
@@ -42,4 +43,24 @@
     -fx-padding: 5;
     -fx-border-radius: 5;
     -fx-font-family: Arial, SansSerif;
+}
+
+/* Menu */
+
+.menu-bar {
+    -fx-background-color: transparent;
+}
+.menu {
+    -fx-label-padding: 3px;
+}
+.menu .label, .menu-item .label {
+    -fx-text-fill: black;
+}
+
+.menu:hover, .menu:showing, .menu:focused, .menu:pressed, .menu-item:focused {
+    -fx-background-color: white;
+}
+
+.context-menu {
+    -fx-background-color: linear-gradient(from 0px 0px to 50px 50px, #73D4FFff, #958BE8ff);
 }
